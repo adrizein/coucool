@@ -1,0 +1,54 @@
+{
+  "name": "coucool-frontend",
+  "version": "0.1.0",
+  "description": "Coucool 2018 Frontend",
+  "engines": {
+    "node": "^8.4.0"
+  },
+  "main": "build/index.js",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --config webpack.dev.js"
+  },
+  "dependencies": {
+    "@cycle/dom": "^18.3.0",
+    "@cycle/rxjs-run": "^7.1.0",
+    "@types/bluebird": "^3.5.10",
+    "@types/lodash": "^4.14.74",
+    "@types/socket.io-client": "^1.4.30",
+    "bluebird": "^3.5.0",
+    "lodash": "^4.17.4",
+    "rxjs": "^5.4.3",
+    "socket.io-client": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.43",
+    "chai": "^4.1.2",
+    "clean-webpack-plugin": "^0.1.16",
+    "css-loader": "^0.28.7",
+    "express": "^4.15.4",
+    "html-webpack-plugin": "^2.30.1",
+    "mocha": "^3.5.3",
+    "request": "^2.81.0",
+    "style-loader": "^0.18.2",
+    "ts-loader": "^2.3.7",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2",
+    "webpack-merge": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrizein/coucool"
+  },
+  "keywords": [
+    "coucool",
+    "cycle.js",
+    "frontend",
+    "typescript"
+  ],
+  "license": "GPL-3.0"
+}

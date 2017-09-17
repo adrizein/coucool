@@ -57,3 +57,14 @@ typings/
 # dotenv environment variables file
 .env
 
+# IDE files
+.idea/
+
+# Builds
+build/
+dist/
+
+# Typescript only
+backend/src/**/*.js
+frontend/src/**/*.js
+
