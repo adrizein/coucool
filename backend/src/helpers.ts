@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import * as Bromise from 'bluebird';
 import Signals = NodeJS.Signals;
 
@@ -87,5 +88,88 @@ export class Counter<T> {
 
     public forEach(callback: (key: T, count: number) => void) {
         return this.map.forEach((count, key) => callback(key, count));
+    }
+}
+
+
+export function getFloat(name: string, defaultValue: number = null): number {
+    const value = process.env[name];
+
+    if (value) {
+        const float = parseFloat(value);
+        if (_.isNaN(float)) {
+            throw new Error(`The "${name}" environment variable should be a float, instead it is: "${value}"`);
+        }
+
+        return float;
+    }
+    else if (defaultValue !== null) {
+        return defaultValue;
+    }
+    else {
+        throw new Error(`The ${name} environment variable is missing`);
+    }
+}
+
+
+export function getInteger(name: string, defaultValue: number = null): number {
+    const value = process.env[name];
+
+    if (value) {
+        const integer = parseInt(value);
+        if (_.isNaN(integer)) {
+            throw new Error(`The "${name}" environment variable should be an integer, instead it is: "${value}"`);
+        }
+
+        return integer;
+    }
+    else if (defaultValue !== null) {
+        return _.floor(defaultValue);
+    }
+    else {
+        throw new Error(`The ${name} environment variable is missing`);
+    }
+}
+
+
+export function getString(name: string, defaultValue: string = null): string {
+    const value = process.env[name];
+
+    if (value) {
+        return value;
+    }
+    else if (defaultValue !== null) {
+        return defaultValue;
+    }
+    else {
+        throw new Error(`The "${name}" environment variable is missing`);
+    }
+}
+
+
+export function getBoolean(
+    name: string,
+    defaultValue: boolean = null,
+    trueValues = ['1', 'true'],
+    falseValues = ['0', 'false']
+): boolean {
+    const value = (process.env[name] || '').toLowerCase();
+
+    if (value) {
+        if (trueValues.includes(value)) {
+            return true;
+        }
+        else if (falseValues.includes(value)) {
+            return false;
+        }
+        else {
+            throw new Error(`The "${name}" environment variable should be a boolean, instead it is "${value}"`);
+        }
+    }
+    else if (defaultValue !== null) {
+        return defaultValue;
+    }
+    else {
+        throw new Error(`The "${name}" environment variable is missing`);
     }
 }

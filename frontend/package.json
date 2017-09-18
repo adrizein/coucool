@@ -15,15 +15,15 @@
   "dependencies": {
     "@cycle/dom": "^18.3.0",
     "@cycle/rxjs-run": "^7.1.0",
-    "@types/bluebird": "^3.5.10",
-    "@types/lodash": "^4.14.74",
-    "@types/socket.io-client": "^1.4.30",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.4",
     "rxjs": "^5.4.3",
     "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.10",
+    "@types/lodash": "^4.14.74",
+    "@types/socket.io-client": "^1.4.30",
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.43",
     "chai": "^4.1.2",
