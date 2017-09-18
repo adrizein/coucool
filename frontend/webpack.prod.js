@@ -8,6 +8,6 @@ const
 
 module.exports = merge(common, {
     plugins: [
-        new UglifyJSPlugin({compress: true}),
+        new UglifyJSPlugin({compress: {warnings: false}}),
     ]
 });
