@@ -10,10 +10,12 @@
     "build": "webpack --config webpack.prod.js",
     "lint": "tslint -p . -c ../tslint.json",
     "start": "webpack-dev-server --config webpack.dev.js",
-    "prebuild": "npm run lint"
+    "prebuild": "npm run lint",
+    "prestart": "touch ../.env"
   },
   "dependencies": {
     "@cycle/dom": "^18.3.0",
+    "@cycle/http": "^14.3.0",
     "@cycle/rxjs-run": "^7.1.0",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.4",
@@ -22,10 +24,12 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.10",
-    "@types/lodash": "^4.14.74",
-    "@types/socket.io-client": "^1.4.30",
     "@types/chai": "^4.0.4",
+    "@types/facebook-js-sdk": "^2.8.3",
+    "@types/lodash": "^4.14.74",
     "@types/mocha": "^2.2.43",
+    "@types/node": "^8.0.31",
+    "@types/socket.io-client": "^1.4.30",
     "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.7",

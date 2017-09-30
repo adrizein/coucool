@@ -1,4 +1,4 @@
-import {Cell} from './cell';
+import Cell from './cell';
 
 
 export enum ActionType {
@@ -12,3 +12,4 @@ export interface Action {
     cell: Cell;
 }
 
+export default Action;

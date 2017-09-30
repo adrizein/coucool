@@ -1,10 +1,10 @@
 import {Counter} from '../helpers';
-import {Cell} from './cell';
+import Cell from './cell';
 import {Observable, Subject} from 'rxjs/Rx';
 import {Action, ActionType} from './action';
 
 
-export class GameOfLife {
+export default class GameOfLife {
 
     public readonly action$: Subject<Action> = new Subject();
 
@@ -59,8 +59,10 @@ export class GameOfLife {
             possibleCells.add(cell.toString());
 
             cell.neighbours.forEach((neighbour) => {
-                counter.add(neighbour.toString());
-                possibleCells.add(neighbour.toString());
+                const key = neighbour.toString();
+
+                counter.add(key);
+                possibleCells.add(key);
             });
         });
 
