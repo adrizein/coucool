@@ -35,6 +35,10 @@ const config = {
         period: getInteger('GAME_PERIOD', 500),
         buffer: getInteger('GAME_BUFFER', 50),
     },
+    security: {
+        tokenLifetime: getInteger('TOKEN_LIFETIME', 8 * 3600 * 1000),
+        jwtSecret: getString('JWT_SECRET'),
+    }
 };
 
 export default config;

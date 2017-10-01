@@ -5,7 +5,7 @@ import * as Bromise from 'bluebird';
 import * as winston from 'winston';
 
 import {robustJoin} from '../helpers';
-import {Controller} from '../controller/index';
+import Controller from '../controller';
 import config from '../config';
 
 

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 
-export class Cell {
+export default class Cell {
 
     public static fromJSON({x, y}: any): Cell {
         if (_.isSafeInteger(x) && _.isSafeInteger(y)) {

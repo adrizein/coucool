@@ -2,12 +2,12 @@ import {Observable, Subscription} from 'rxjs/Rx';
 import * as winston from 'winston';
 import Socket = SocketIO.Socket;
 
-import {Cell} from './cell';
+import Cell from './cell';
 import {Action, ActionType} from './action';
-import {GameOfLife} from './game';
+import GameOfLife from './game';
 
 
-export class Client {
+export default class Client {
 
     public readonly action$: Observable<Action>;
 

@@ -1,13 +1,14 @@
 FROM node:8-alpine
 
+RUN apk add --no-cache --virtual .gyp python make g++
+
+ENV NODE_ENV=production SERVER_ASSETS=public/
+
 COPY backend/build/src src
 COPY backend/package.json .
 COPY frontend/dist public
 
-ENV NODE_ENV=production
-ENV SERVER_ASSETS public/
-
-RUN npm install --production
+RUN npm install --production && apk del .gyp
 
 ENTRYPOINT ["node"]
 CMD ["src/index.js"]

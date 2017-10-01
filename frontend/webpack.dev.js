@@ -12,7 +12,7 @@ module.exports = merge(common, {
         compress: true,
         proxy: {
             "/socket.io": {
-                target: "http://localhost:3333",
+                target: "http://localhost:3333/socket.io",
             }
         }
     },

@@ -4,14 +4,17 @@ import Socket = SocketIO.Socket;
 import Sockets = SocketIO.Server;
 
 import config from '../config';
-import {Client} from '../model/client';
-import {GameOfLife} from '../model/game';
+import Client from '../model/client';
+import GameOfLife from '../model/game';
 import {Action, ActionType} from '../model/action';
 
+import Database from './database';
 
-export class Controller {
+
+export default class Controller {
 
     private readonly game: GameOfLife = new GameOfLife(config.game.period);
+    private readonly database: Database = new Database(config.database.url);
 
     public constructor(sockets: Sockets) {
         const clientAction$: Observable<Action> =

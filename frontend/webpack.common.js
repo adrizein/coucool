@@ -1,5 +1,6 @@
 const
     CleanWebpackPlugin = require('clean-webpack-plugin'),
+    {EnvironmentPlugin} = require('webpack'),
     HtmlWebpackPlugin = require('html-webpack-plugin'),
     path = require('path');
 
@@ -13,9 +14,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'Coucool 2018',
-            fbAppId: process.env.FB_APP_ID,
             template: './src/index.ejs',
         }),
+        new EnvironmentPlugin(['SERVER_URL', 'FB_APP_ID']),
         new CleanWebpackPlugin(['./dist']),
     ],
     module: {

@@ -1,0 +1,26 @@
+#app nav {
+    height: 50px;
+    background-color: aliceblue;
+    display: flex;
+    padding: 10px;
+}
+
+#app nav span {
+    flex: 1;
+    font-size: 12pt;
+    font-weight: bold;
+    color: royalblue;
+    line-height: 50px;
+}
+
+#app nav button {
+    background-color: royalblue;
+    color: white;
+    font-weight: bold;
+    border: solid royalblue 1px;
+}
+
+#app nav button:disabled {
+    background-color: lightgrey;
+    color: royalblue;
+}

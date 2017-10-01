@@ -6,11 +6,14 @@ node_js:
   - 8
 env:
   - GAME_PERIOD=2000
-
+branches:
+  only:
+    - master
 install: make install
 script: make test
 after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
   - docker login --username=_ --password=${HEROKU_API_KEY} registry.heroku.com
   - docker build --tag registry.heroku.com/coucool/web .
   - docker push registry.heroku.com/coucool/web
-
+  - fi;

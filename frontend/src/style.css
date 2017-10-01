@@ -1,3 +1,12 @@
+body {
+    font-family: arial, sans-serif;
+    margin: 0;
+}
+
 #app h1 {
-    color: #5b30f0;
+    color: royalblue;
+}
+
+#app #main {
+    margin: 10px;
 }
