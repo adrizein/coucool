@@ -12,8 +12,6 @@ branches:
 install: make install
 script: make test
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
   - docker login --username=_ --password=${HEROKU_API_KEY} registry.heroku.com
   - docker build --tag registry.heroku.com/coucool/web .
   - docker push registry.heroku.com/coucool/web
-  - fi;
