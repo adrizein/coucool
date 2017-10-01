@@ -13,7 +13,7 @@
     "test": "mocha build/test/**/*.js",
     "pretest": "npm run build",
     "prebuild": "npm run lint",
-    "prestart": "touch ../.env"
+    "prestart": "npm run build"
   },
   "dependencies": {
     "@types/argon2": "^0.15.0",

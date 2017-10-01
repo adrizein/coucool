@@ -11,7 +11,7 @@
     "lint": "tslint -p . -c ../tslint.json",
     "start": "webpack-dev-server --config webpack.dev.js",
     "prebuild": "npm run lint",
-    "prestart": "touch ../.env"
+    "prestart": "npm run lint"
   },
   "dependencies": {
     "@cycle/dom": "^18.3.0",
