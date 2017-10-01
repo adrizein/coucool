@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import {VNode, button, nav, span} from '@cycle/dom';
