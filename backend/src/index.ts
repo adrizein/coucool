@@ -1,5 +1,10 @@
 global.Promise = require('bluebird');
 
+if (process.env.NODE_ENV !== 'production') {
+    require('winston').level = 'debug';
+}
+
+
 import config from './config';
 import {Server} from './server';
 import {stopSignals} from './helpers';

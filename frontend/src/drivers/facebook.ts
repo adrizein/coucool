@@ -22,7 +22,7 @@ export function makeFacebookDriver(appId: string, locale: string, buttonId: stri
         let init = false;
         const subscribers: Subscriber<any>[] = [];
 
-        return new Observable<any>((subscriber) => {
+        return Observable.create((subscriber: Subscriber<any>) => {
             subscribers.push(subscriber);
 
             if (!init) {
@@ -143,7 +143,7 @@ export function makeFacebookDriver(appId: string, locale: string, buttonId: stri
                     switch (payload.type) {
                         case 'login':
                             // tslint:disable:no-console
-                            console.error('The login action should be bound to a button');
+                            console.error('The login action should be bound the onlick attribute of a button');
                             loginButton.disabled = true;
                             return FB.login(
                                 (res) => loginCallback(res, loginButton),

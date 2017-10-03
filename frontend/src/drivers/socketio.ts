@@ -1,6 +1,7 @@
+import {Stream} from 'xstream';
 import * as io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
-import {Stream} from 'xstream';
+import {Subscriber} from 'rxjs/Subscriber';
 
 
 export type Message = {type: string, content: any};
@@ -14,15 +15,17 @@ export function makeSocketIODriver(url: string): SocketIODriver {
     return function socketIODriver(stream: Stream<Message>) {
         const event$: Observable<Message> = Observable.from(stream);
 
-        event$.subscribe(({type, content}: Message) => socket.emit(type, content));
+        event$.subscribe(({type, content}: Message) => {
+            socket.emit(type, content);
+        });
 
         return {
             get(eventName: string) {
-                return new Observable<any>((subscriber => {
+                return Observable.create((subscriber: Subscriber<any>) => {
                     socket.on(eventName, (event: any) => {
                         subscriber.next(event);
                     });
-                }));
+                });
             },
         };
     };

@@ -1,12 +1,13 @@
 /* tslint:disable:no-console */
 import {Observable} from 'rxjs/Rx';
 import {makeHTTPDriver} from '@cycle/http';
-import {makeDOMDriver, h1, div, VNode} from '@cycle/dom';
+import {makeDOMDriver, h1, div, h, VNode} from '@cycle/dom';
 import {run} from '@cycle/rxjs-run';
 
 import './style.css';
 import {Sources, Sinks} from './types';
 import navbar from './components/navbar';
+import gameOfLife from './components/game-of-life';
 import {makeFacebookDriver} from './drivers/facebook';
 import {makeSocketIODriver} from './drivers/socketio';
 
@@ -19,12 +20,12 @@ const drivers = {
 };
 
 
-function combine(...nodes: Observable<VNode>[]): Observable<VNode> {
-    return Observable.combineLatest(nodes).map((array) => div(array));
+function combine(selector: string, ...nodes: Observable<VNode>[]): Observable<VNode> {
+    return Observable.combineLatest(nodes).map((array) => h(selector, array));
 }
 
 
-function main({DOM, Facebook}: Sources): Sinks {
+function main({DOM, Facebook, Socket}: Sources): Sinks {
     const
         logState$ = Facebook
             .filter((event) => ['connected', 'disconnected'].includes(event.type)),
@@ -36,18 +37,36 @@ function main({DOM, Facebook}: Sources): Sinks {
             .map((event) => event.data)
             .startWith(null);
 
+    const grid$ = gameOfLife(
+        Socket.get('game:start'),
+        Observable.of({height: 25, width: 60, x: 0, y: 0}),
+        Socket.get('game:update'),
+    );
+
     return {
         DOM: combine(
+            'div',
             navbar(Observable.merge(
                 logState$
                     .filter((event) => event.type === 'disconnected')
                     .mapTo(null),
                 userInfo$,
             )),
-            Observable.of(div('#main', [h1('Coucool !')])),
+            combine(
+                'div#main',
+                Observable.of(h1('Coucool !')),
+                grid$.startWith(div('.game')),
+            ),
         ),
 
-        Socket: Observable.of({type: 'cell:on', content: {x: 0, y: 0}}),
+        Socket: DOM
+            .select('#main div.game div.cell.off')
+            .events('click')
+            .map((click) => {
+                const [x, y] = click.srcElement.id.split('/').map(parseFloat);
+
+                return {type: 'cell:on', content: {x, y}};
+            }),
 
         Facebook: getUserInfo$,
 
