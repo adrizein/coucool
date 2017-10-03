@@ -72,7 +72,7 @@ export default class GameOfLife {
 
             if (neighbourCount === 3 || (neighbourCount === 2 && cell)) {
                 if (!cell) {
-                    cell = Cell.fromJSON(JSON.parse(key));
+                    cell = Cell.fromString(key);
                     this.cells.set(key, cell);
                     this.action$.next({type: ActionType.on, cell});
                 }

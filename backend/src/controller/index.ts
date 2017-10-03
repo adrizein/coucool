@@ -23,8 +23,7 @@ export default class Controller {
                      sockets.on('connection', (socket: Socket) => subscriber.next(socket));
                 })
                 .flatMap(((socket: Socket) => {
-                    const client = new Client(socket);
-                    client.start(this.game);
+                    const client = new Client(socket, this.game);
                     winston.info(`Client ${client.id} connected`);
 
                     return client.action$;

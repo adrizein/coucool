@@ -3,12 +3,17 @@ body {
     margin: 0;
 }
 
+html, body, .game {
+    height: 100%;
+}
+
 #app h1 {
     color: royalblue;
 }
 
 #app #main {
     margin: 10px;
+    margin-bottom: 0px;
 }
 
 button#facebook {

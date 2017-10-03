@@ -8,11 +8,12 @@ import Cell from '../../../../backend/src/model/cell';
 import {Action, ActionType} from '../../../../backend/src/model/action';
 
 
-interface GridDimensions {
+export interface GridDimensions {
     height: number;
     width: number;
     x: number;
     y: number;
+    size: string;
 }
 
 
@@ -22,49 +23,47 @@ export default function gameOfLife(
     gameAction$: Observable<Action[]>,
     ): Observable<VNode> {
 
-    let cells: any = {};
     const
-        gridDimensions: GridDimensions = {height: 100, width: 100, x: -50, y: -50},
+        cells: Map<string, Cell> = new Map(),
+        gridDimensions: GridDimensions = {height: 10, width: 10, x: -5, y: -5, size: '30px'},
         grid$ = new Subject<VNode>();
 
 
     gridDimension$.subscribe((dims) => {
         merge(gridDimensions, dims);
 
-        const grid = cellsToGrid(cells, gridDimensions, {});
-
-        grid$.next(grid);
+        grid$.next(cellsToGrid(cells, gridDimensions, new Set()));
     });
 
     gameState$.subscribe((game) => {
-        cells = {};
-        game.forEach((cell) => {
-            cells[JSON.stringify(cell)] = cell;
+        cells.clear();
+        game.forEach((cell: Cell) => {
+            cells.set(cell.toString(), cell);
         });
 
-        grid$.next(cellsToGrid(cells, gridDimensions, {}));
+        grid$.next(cellsToGrid(cells, gridDimensions, new Set()));
     });
 
     gameAction$.subscribe((actions) => {
-        const loveCells: any = {};
+        const loveCells: Set<string> = new Set();
 
-        actions.forEach(({cell, type}) => {
-            const key = JSON.stringify(cell);
+        actions.forEach(({cell, type}: Action) => {
+            const key = cell.toString();
             switch (type) {
                 case ActionType.on: {
-                    if (!cells[key]) {
-                        cells[key] = cell;
+                    if (!cells.has(key)) {
+                        cells.set(key, cell);
                     }
                     break;
                 }
                 case ActionType.off: {
-                    if (cells[key]) {
-                        delete cells[key];
+                    if (cells.has(key)) {
+                        cells.delete(key);
                     }
                     break;
                 }
                 case ActionType.love: {
-                    loveCells[key] = true;
+                    loveCells.add(key);
                 }
             }
         });
@@ -76,28 +75,28 @@ export default function gameOfLife(
 }
 
 
-function cellsToGrid(cells: any, grid: GridDimensions, loveCells: any): VNode {
+function cellsToGrid(cells: Map<string, Cell>, grid: GridDimensions, loveCells: Set<string>): VNode {
     return div('.game',
         range(grid.y, grid.y + grid.height)
             .map((y) => div('.line',
                 range(grid.x, grid.x + grid.width)
                     .map((x) => {
-                        const key = JSON.stringify({x, y});
+                        const key = JSON.stringify([x, y]);
 
                         let selector = `#${x}/${y}.cell`;
 
-                        if (cells[key]) {
+                        if (cells.has(key)) {
                             selector += '.on';
                         }
                         else {
                             selector += '.off';
                         }
 
-                        if (loveCells[key]) {
+                        if (loveCells.has(key)) {
                             selector += '.love';
                         }
 
-                        return div(selector);
+                        return div(selector, {style: {height: grid.size, width: grid.size}});
                     })
                 )
             )

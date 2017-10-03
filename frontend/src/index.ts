@@ -10,6 +10,8 @@ import navbar from './components/navbar';
 import gameOfLife from './components/game-of-life';
 import {makeFacebookDriver} from './drivers/facebook';
 import {makeSocketIODriver} from './drivers/socketio';
+import Cell from '../../backend/src/model/cell';
+import Action from '../../backend/src/model/action';
 
 
 const drivers = {
@@ -38,9 +40,11 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
             .startWith(null);
 
     const grid$ = gameOfLife(
-        Socket.get('game:start'),
-        Observable.of({height: 25, width: 60, x: 0, y: 0}),
-        Socket.get('game:update'),
+        Socket.get('game:start')
+            .map((cells) => cells.map((cell: Cell) => Cell.fromJSON(cell))),
+        Observable.of({height: 25, width: 50, size: '30px', x: 0, y: 0}),
+        Socket.get('game:update')
+            .map((actions) => actions.map(({cell, type}: Action) => ({cell: Cell.fromJSON(cell), type}))),
     );
 
     return {
@@ -59,7 +63,8 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
             ),
         ),
 
-        Socket: DOM
+        Socket: Observable.merge(
+            DOM
             .select('#main div.game div.cell.off')
             .events('click')
             .map((click) => {
@@ -67,6 +72,12 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
 
                 return {type: 'cell:on', content: {x, y}};
             }),
+            Socket.get('reconnect').map(() => {
+                console.log('Socket reconnected, reloading game...');
+
+                return {type: 'game:reload', content: null};
+            }),
+        ),
 
         Facebook: getUserInfo$,
 
