@@ -1,7 +1,12 @@
+#main div.game {
+    overflow: scroll;
+}
+
 #main div.cell {
-    width: 30px;
-    height: 30px;
     border: solid royalblue 1px;
+    min-height: 8px;
+    min-width: 8px;
+    flex-shrink: 0;
 }
 
 #main div.cell.on {

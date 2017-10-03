@@ -1,10 +1,10 @@
-import * as _ from 'lodash';
+import {isSafeInteger} from 'lodash';
 
 
 export default class Cell {
 
-    public static fromJSON({x, y}: any): Cell {
-        if (_.isSafeInteger(x) && _.isSafeInteger(y)) {
+    public static fromJSON({x, y}: {x: number, y: number}): Cell {
+        if (isSafeInteger(x) && isSafeInteger(y)) {
             return new Cell(x, y);
         }
         else {
@@ -12,10 +12,16 @@ export default class Cell {
         }
     }
 
+    public static fromString(key: string) {
+        const [x, y] = JSON.parse(key);
+
+        return Cell.fromJSON({x, y});
+    }
+
     public constructor(public x: number, public y: number) {}
 
     public toString(): string {
-        return JSON.stringify(this);
+        return JSON.stringify([this.x, this.y]);
     }
 
     public get neighbours(): Cell[] {
