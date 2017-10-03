@@ -1,5 +1,5 @@
-import {Counter} from '../helpers';
 import Cell from './cell';
+import {Counter} from '../helpers';
 import {Observable, Subject} from 'rxjs/Rx';
 import {Action, ActionType} from './action';
 
@@ -67,12 +67,12 @@ export default class GameOfLife {
         });
 
         possibleCells.forEach((key) => {
-            const
-                cell = this.cells.get(key),
-                neighbourCount = counter.get(key);
+            let cell = this.cells.get(key);
+            const neighbourCount = counter.get(key);
 
             if (neighbourCount === 3 || (neighbourCount === 2 && cell)) {
                 if (!cell) {
+                    cell = Cell.fromJSON(JSON.parse(key));
                     this.cells.set(key, cell);
                     this.action$.next({type: ActionType.on, cell});
                 }

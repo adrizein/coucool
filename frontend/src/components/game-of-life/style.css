@@ -1,0 +1,26 @@
+#main div.cell {
+    width: 30px;
+    height: 30px;
+    border: solid royalblue 1px;
+}
+
+#main div.cell.on {
+    background-color: royalblue;
+}
+
+#main div.cell {
+    background-color: aliceblue;
+}
+
+#main div.line {
+    display: flex;
+    flex-direction: row;
+}
+
+#main div.cell.off:hover {
+    background-color: #b5d0ff;
+}
+
+#main div.cell.on:hover {
+    background-color: #488dff;
+}

@@ -55,7 +55,7 @@ export class Server {
                 this.server.close((err: Error) => {
                     if (err) {
                         if (err.message === 'Not running') {
-                            winston.error(err.message);
+                            winston.error('Server not running');
 
                             return resolve(false);
                         }

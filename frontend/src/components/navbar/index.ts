@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 import {Observable} from 'rxjs/Observable';
 import {VNode, nav, span} from '@cycle/dom';
 

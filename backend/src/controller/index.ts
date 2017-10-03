@@ -30,11 +30,12 @@ export default class Controller {
                     return client.action$;
                 }));
 
+        winston.debug('Subscribing to client actions');
         clientAction$.subscribe((action) => {
             switch (action.type) {
-                case ActionType.on: this.game.turnOn(action.cell); break;
-                case ActionType.off: this.game.turnOff(action.cell); break;
-                case ActionType.love: winston.error('What is love?'); break;
+                case ActionType.on: return this.game.turnOn(action.cell);
+                case ActionType.off: return this.game.turnOff(action.cell);
+                case ActionType.love: return winston.error('What is love?');
             }
         });
     }
