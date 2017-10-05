@@ -1,8 +1,9 @@
 /* tslint:disable:no-console */
+import {sample} from 'lodash';
 import {Observable} from 'rxjs/Rx';
+import {run} from '@cycle/rxjs-run';
 import {makeHTTPDriver} from '@cycle/http';
 import {makeDOMDriver, h1, div, h, VNode} from '@cycle/dom';
-import {run} from '@cycle/rxjs-run';
 
 import './style.css';
 import {Sources, Sinks} from './types';
@@ -65,13 +66,23 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
 
         Socket: Observable.merge(
             DOM
-            .select('#main div.game div.cell.off')
-            .events('click')
-            .map((click) => {
-                const [x, y] = click.srcElement.id.split('/').map(parseFloat);
+                .select('#main div.game div.cell.off')
+                .events('click')
+                .flatMap((click: MouseEvent) => {
+                    const [x, y] = click.srcElement.id.split('/').map(parseFloat);
 
-                return {type: 'cell:on', content: {x, y}};
-            }),
+                    if (click.shiftKey) {
+                        return [{type: 'cell:on', content: {x, y}}];
+                    }
+
+                    const
+                        cell = Cell.fromJSON({x, y}),
+                        cells = cell.neighbours.concat([cell]);
+
+                    return cells
+                        .filter(() => sample([true, false]))
+                        .map((content) => ({type: 'cell:on', content}));
+                }),
             Socket.get('reconnect').map(() => {
                 console.log('Socket reconnected, reloading game...');
 
