@@ -2,7 +2,7 @@ FROM node:8-alpine
 
 RUN apk add --no-cache --virtual .gyp python make g++
 
-ENV NODE_ENV=production SERVER_ASSETS=public/
+ENV NODE_ENV=production FRONTEND_DIR=public/
 
 COPY backend/build/src src
 COPY backend/package.json .
