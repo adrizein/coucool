@@ -4,8 +4,6 @@ services:
 dist: trusty
 node_js:
   - 8
-env:
-  - GAME_PERIOD=2000
 branches:
   only:
     - master

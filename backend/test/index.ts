@@ -14,6 +14,7 @@ describe('Game Of Life', () => {
         client = io(config.server.url);
 
     before('Start server', () => server.start());
+    before('Wait for server', (done) => client.once('game:start', () => done()));
     after('Stop server', () => server.stop());
 
 

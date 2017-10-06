@@ -8,7 +8,7 @@ const config = {
         get url() {
             return `http://${this.host}:${this.port}`;
         },
-        assets: getString('SERVER_ASSETS', '../frontend/dist'),
+        frontend: getString('FRONTEND_DIR', '../frontend/dist'),
     },
     database: {
         host: getString('DATABASE_HOST', 'localhost'),

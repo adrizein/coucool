@@ -1,17 +1,19 @@
 /* tslint:disable:no-console */
+import {sample} from 'lodash';
 import {Observable} from 'rxjs/Rx';
+import {run} from '@cycle/rxjs-run';
 import {makeHTTPDriver} from '@cycle/http';
 import {makeDOMDriver, h1, div, h, VNode} from '@cycle/dom';
-import {run} from '@cycle/rxjs-run';
 
 import './style.css';
 import {Sources, Sinks} from './types';
 import navbar from './components/navbar';
-import gameOfLife from './components/game-of-life';
+import gameOfLife, {GridDimensions} from './components/game-of-life';
 import {makeFacebookDriver} from './drivers/facebook';
 import {makeSocketIODriver} from './drivers/socketio';
 import Cell from '../../backend/src/model/cell';
 import Action from '../../backend/src/model/action';
+import {Subscriber} from 'rxjs/Subscriber';
 
 
 const drivers = {
@@ -27,6 +29,11 @@ function combine(selector: string, ...nodes: Observable<VNode>[]): Observable<VN
 }
 
 
+function compare([x0, y0]: number[], [x1, y1]: number[]) {
+    return x0 === x1 && y0 === y1;
+}
+
+
 function main({DOM, Facebook, Socket}: Sources): Sinks {
     const
         logState$ = Facebook
@@ -37,12 +44,50 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
         userInfo$ = Facebook
             .filter((event) => (event.type === 'api' && event.request.path === '/me'))
             .map((event) => event.data)
-            .startWith(null);
+            .startWith(null),
+        wheel$ = Observable.fromEvent(window, 'wheel', {passive: true}),
+        zoom$ = wheel$
+            .filter((wheel: WheelEvent) => wheel.shiftKey)
+            .pluck('deltaY'),
+        scroll$ = wheel$
+            .filter((wheel: WheelEvent) => !(wheel.shiftKey || wheel.metaKey || wheel.ctrlKey || wheel.altKey))
+            .map((wheel: WheelEvent) => [wheel.deltaX, wheel.deltaY])
+            .startWith([0, 0]),
+        gridSize$ = Observable
+            .fromEvent(window, 'resize', {passive: true})
+            .startWith(null)
+            .switchMap(() => DOM
+                .select('#game')
+                .elements()
+                .filter((element: Element[]) => element.length > 0)
+                .map(([element]: Element[]) => [element.clientHeight, element.clientWidth])
+                .distinctUntilChanged(compare)
+            ),
+        gridDimensions = new GridDimensions(20, 20, 0, 0, 20),
+        gridDimension$ = Observable.create((subscriber: Subscriber<GridDimensions>) => {
+            zoom$.subscribe((zoom: number) => {
+                gridDimensions.zoom(zoom);
+
+                subscriber.next(gridDimensions);
+            });
+
+            scroll$.subscribe(([dx, dy]) => {
+                gridDimensions.translate(dx, dy);
+
+                subscriber.next(gridDimensions);
+            });
+
+            gridSize$.subscribe(([height, width]) => {
+                gridDimensions.resize(height, width);
+
+                subscriber.next(gridDimensions);
+            });
+        });
 
     const grid$ = gameOfLife(
         Socket.get('game:start')
             .map((cells) => cells.map((cell: Cell) => Cell.fromJSON(cell))),
-        Observable.of({height: 25, width: 50, size: '30px', x: 0, y: 0}),
+        gridDimension$,
         Socket.get('game:update')
             .map((actions) => actions.map(({cell, type}: Action) => ({cell: Cell.fromJSON(cell), type}))),
     );
@@ -65,13 +110,23 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
 
         Socket: Observable.merge(
             DOM
-            .select('#main div.game div.cell.off')
-            .events('click')
-            .map((click) => {
-                const [x, y] = click.srcElement.id.split('/').map(parseFloat);
+                .select('#game div.cell.off')
+                .events('click')
+                .flatMap((click: MouseEvent) => {
+                    const [x, y] = click.srcElement.id.split('/').map(parseFloat);
 
-                return {type: 'cell:on', content: {x, y}};
-            }),
+                    if (click.shiftKey) {
+                        return [{type: 'cell:on', content: {x, y}}];
+                    }
+
+                    const
+                        cell = Cell.fromJSON({x, y}),
+                        cells = cell.neighbours.concat([cell]);
+
+                    return cells
+                        .filter(() => sample([true, false]))
+                        .map((content) => ({type: 'cell:on', content}));
+                }),
             Socket.get('reconnect').map(() => {
                 console.log('Socket reconnected, reloading game...');
 

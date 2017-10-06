@@ -17,7 +17,7 @@ export class Server {
     private readonly controller = new Controller(this.sockets);
 
     public constructor(public readonly port: number) {
-        this.app.use('/', express.static(config.server.assets));
+        this.app.use('/', express.static(config.server.frontend));
     }
 
     public async start() {
