@@ -1,4 +1,4 @@
-import {range, merge} from 'lodash';
+import {range, merge, floor} from 'lodash';
 import {VNode, div} from '@cycle/dom';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
@@ -8,12 +8,40 @@ import Cell from '../../../../backend/src/model/cell';
 import {Action, ActionType} from '../../../../backend/src/model/action';
 
 
-export interface GridDimensions {
-    height: number;
-    width: number;
-    x: number;
-    y: number;
-    size: string;
+export class GridDimensions {
+
+    private pixelHeight: number;
+    private pixelWidth: number;
+
+    public constructor(
+        public height: number,
+        public width: number,
+        public x: number,
+        public y: number,
+        private _size: number) {}
+
+    public get size(): string {
+        return `${this._size}px`;
+    }
+
+    public translate(dx: number, dy: number) {
+        this.x = floor(this.x + dx / this._size);
+        this.y = floor(this.y + dy / this._size);
+    }
+
+    public resize(height: number, width: number) {
+        this.pixelHeight = height;
+        this.pixelWidth = width;
+
+        this.height = floor(height / this._size);
+        this.width = floor(width / this._size);
+    }
+
+    public zoom(zoom: number) {
+        this._size = Math.max(12, this._size + zoom / 20);
+
+        this.resize(this.pixelHeight, this.pixelWidth);
+    }
 }
 
 
@@ -25,7 +53,7 @@ export default function gameOfLife(
 
     const
         cells: Map<string, Cell> = new Map(),
-        gridDimensions: GridDimensions = {height: 10, width: 10, x: -5, y: -5, size: '30px'},
+        gridDimensions = new GridDimensions(20, 20, 0, 0, 20),
         grid$ = new Subject<VNode>();
 
 
