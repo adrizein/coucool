@@ -3,17 +3,22 @@ body {
     margin: 0;
 }
 
-html, body, .game {
+html, body, #app, #app > div {
     height: 100%;
+}
+
+#app > div, #main {
+    display: flex;
+    flex-direction: column;
 }
 
 #app h1 {
     color: royalblue;
 }
 
-#app #main {
+#main {
     margin: 10px;
-    margin-bottom: 0px;
+    flex-grow: 1;
 }
 
 button#facebook {

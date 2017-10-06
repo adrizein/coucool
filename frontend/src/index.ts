@@ -66,7 +66,7 @@ function main({DOM, Facebook, Socket}: Sources): Sinks {
 
         Socket: Observable.merge(
             DOM
-                .select('#main div.game div.cell.off')
+                .select('#game div.cell.off')
                 .events('click')
                 .flatMap((click: MouseEvent) => {
                     const [x, y] = click.srcElement.id.split('/').map(parseFloat);

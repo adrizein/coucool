@@ -76,7 +76,7 @@ export default function gameOfLife(
 
 
 function cellsToGrid(cells: Map<string, Cell>, grid: GridDimensions, loveCells: Set<string>): VNode {
-    return div('.game',
+    return div('#game',
         range(grid.y, grid.y + grid.height)
             .map((y) => div('.line',
                 range(grid.x, grid.x + grid.width)

@@ -1,31 +1,39 @@
-#main div.game {
-    overflow: scroll;
+#game {
+    overflow: hidden;
+    flex-grow: 1;
 }
 
-#main div.cell {
-    border: solid royalblue 1px;
-    min-height: 8px;
-    min-width: 8px;
+#game div.cell {
     flex-shrink: 0;
+    border: solid royalblue 1px;
 }
 
-#main div.cell.on {
+#game div.cell.on {
     background-color: royalblue;
 }
 
-#main div.cell {
+#game div.cell {
+    margin: -1px;
     background-color: aliceblue;
 }
 
-#main div.line {
+#game div.line {
     display: flex;
     flex-direction: row;
 }
 
-#main div.cell.off:hover {
+#game div.line:first-child div.cell {
+    margin-top: 0;
+}
+
+#game div.cell:first-child {
+    margin-left: 0;
+}
+
+#game div.cell.off:hover {
     background-color: #b5d0ff;
 }
 
-#main div.cell.on:hover {
+#game div.cell.on:hover {
     background-color: #488dff;
 }
